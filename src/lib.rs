@@ -36,7 +36,7 @@ fn load64(state: &[u8]) -> Result<u64, &'static str> {
 fn store64(a: u64) -> Vec<u8> {
   let mut v = Vec::with_capacity(8);
   for i in 0..8 {
-    v.push((((a) >> (8 * i)) % 256) as u8)
+    v.push(((a >> (8 * i)) % 256) as u8)
   }
 
   v
@@ -333,8 +333,68 @@ mod tests {
     let msg = "hello".as_bytes();
     let res = Keccak::Sha256.hash(msg).unwrap();
     let expected = vec![
-      51, 56, 190, 105, 79, 80, 197, 243, 56, 129, 73, 134, 205, 240, 104, 100, 83, 168, 136, 184,
-      79, 66, 77, 121, 42, 244, 185, 32, 35, 152, 243, 146,
+      51, 56, 190, 105, 79, 80, 197, 243, 56, 129, 73, 134, 205, 240, 104, 100,
+      83, 168, 136, 184, 79, 66, 77, 121, 42, 244, 185, 32, 35, 152, 243, 146,
+    ];
+    assert_eq!(expected, res);
+  }
+
+  #[test]
+  fn sha3_224_works() {
+    let msg = "hello".as_bytes();
+    let res = Keccak::Sha224.hash(msg).unwrap();
+    let expected = vec![
+      184, 127, 136, 199, 39, 2, 255, 241, 116, 142, 88, 184, 126, 145, 
+      65, 164, 44, 13, 190, 220, 41, 167, 140, 176, 212, 165, 205, 129
+    ];
+    assert_eq!(expected, res);
+  }
+
+  #[test]
+  fn sha3_384_works() {
+    let msg = "hello".as_bytes();
+    let res = Keccak::Sha384.hash(msg).unwrap();
+    let expected = vec![
+      114, 10, 234, 17, 1, 158, 240, 100, 64, 251, 240, 93, 135, 170, 36, 104, 10,
+      33, 83, 223, 57, 7, 178, 54, 49, 231, 23, 124, 230, 32, 250, 19, 48, 255, 7,
+      192, 253, 222, 229, 70, 153, 164, 195, 238, 14, 233, 216, 135
+    ];
+    assert_eq!(expected, res);
+  }
+
+  #[test]
+  fn sha3_512_works() {
+    let msg = "hello".as_bytes();
+    let res = Keccak::Sha512.hash(msg).unwrap();
+    let expected = vec![
+      117, 213, 39, 195, 104, 242, 239, 232, 72, 236, 246, 176, 115, 163, 103, 103,
+      128, 8, 5, 233, 238, 242, 177, 133, 125, 95, 152, 79, 3, 110, 182, 223, 137,
+      29, 117, 247, 45, 155, 21, 69, 24, 193, 205, 88, 131, 82, 134, 209, 218, 154,
+      56, 222, 186, 61, 233, 139, 90, 83, 229, 237, 120, 168, 73, 118
+    ];
+    assert_eq!(expected, res);
+  }
+
+  #[test]
+  fn shake128_works() {
+    let msg = "hello".as_bytes();
+    let res = Keccak::Shake128(45).hash(msg).unwrap();
+    let expected = vec![
+      142, 180, 182, 169, 50, 242, 128, 51, 94, 225, 162, 121, 248, 194, 8,
+      163, 73, 231, 188, 101, 218, 248, 49, 211, 2, 28, 33, 56, 37, 41,
+      36, 99, 197, 158, 34, 208, 254, 44, 118, 124, 215, 202, 204, 77, 244
+    ];
+    assert_eq!(expected, res);
+  }
+
+  #[test]
+  fn shake256_works() {
+    let msg = "hello".as_bytes();
+    let res = Keccak::Shake256(45).hash(msg).unwrap();
+    let expected = vec![
+      18, 52, 7, 90, 228, 161, 231, 115, 22, 207, 45, 128, 0, 151, 69,
+      129, 163, 67, 185, 235, 188, 167, 227, 209, 219, 131, 57, 76, 48, 242,
+      33, 98, 111, 89, 78, 79, 13, 230, 57, 2, 52, 154, 94, 165, 120
     ];
     assert_eq!(expected, res);
   }
